@@ -1,6 +1,114 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function BookPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [service, setService] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    setSuccess(true);
+
+    // Simulate a short confirmation state, then redirect
+    setTimeout(() => {
+      router.push("/thank-you");
+    }, 1200);
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10 font-sans">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+        <header className="mb-6 text-center sm:mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
+            CareOps
+          </p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+            Book a service
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Share a few details and we&apos;ll match you with the right care
+            team.
+          </p>
+        </header>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-xs font-medium text-slate-700">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="e.g. Jordan Smith"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-700">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-700">
+              Service Type
+            </label>
+            <input
+              type="text"
+              value={service}
+              onChange={(e) => setService(e.target.value)}
+              required
+              placeholder="e.g. Follow-up visit, telehealth consult"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {submitting ? "Booking..." : "Book Now"}
+          </button>
+        </form>
+
+        {success && (
+          <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] text-white">
+              ✓
+            </span>
+            <span>
+              Booking received! Redirecting you to the Thank You page&hellip;
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+"use client";
+
+import { useState } from "react";
 
 export default function BookPage() {
   const [date, setDate] = useState("");
