@@ -1,48 +1,15 @@
 "use client";
 
 const inventoryItems = [
-  { id: 1, name: "Nitrile Gloves (S)", category: "PPE", quantity: 6 },
-  { id: 2, name: "Nitrile Gloves (M)", category: "PPE", quantity: 8 },
-  { id: 3, name: "Nitrile Gloves (L)", category: "PPE", quantity: 4 },
-  { id: 4, name: "Surgical Masks", category: "PPE", quantity: 24 },
-  { id: 5, name: "Alcohol Swabs", category: "Supplies", quantity: 30 },
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    patient: "Jordan Smith",
-    type: "New booking",
-    time: "09:12 AM",
-    clinician: "Dr. Patel",
-  },
-  {
-    id: 2,
-    patient: "Emily Davis",
-    type: "Follow-up scheduled",
-    time: "08:54 AM",
-    clinician: "NP Rivera",
-  },
-  {
-    id: 3,
-    patient: "Daniel Lee",
-    type: "Telehealth booking",
-    time: "Yesterday",
-    clinician: "Dr. Chen",
-  },
-  {
-    id: 4,
-    patient: "Maria Rodriguez",
-    type: "Rescheduled visit",
-    time: "Mon",
-    clinician: "Dr. Singh",
-  },
+  { id: 1, name: "Nitrile Gloves", category: "PPE", quantity: 6 },
+  { id: 2, name: "Surgical Masks", category: "PPE", quantity: 18 },
+  { id: 3, name: "Disposable Syringes", category: "Supplies", quantity: 8 },
+  { id: 4, name: "Alcohol Swabs", category: "Supplies", quantity: 24 },
 ];
 
 export default function DashboardPage() {
-  const hasLowGloveStock = inventoryItems.some(
-    (item) => item.name.toLowerCase().includes("gloves") && item.quantity < 10
-  );
+  const lowStockItems = inventoryItems.filter((item) => item.quantity < 10);
+  const hasLowStock = lowStockItems.length > 0;
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
@@ -56,14 +23,13 @@ export default function DashboardPage() {
             <p className="text-sm font-semibold tracking-tight text-slate-900">
               CareOps Console
             </p>
-            <p className="text-xs text-slate-500">Care operations overview</p>
+            <p className="text-xs text-slate-500">Clinical operations overview</p>
           </div>
         </div>
 
         <nav className="space-y-1 text-sm">
-          <SidebarItem label="Dashboard" active />
+          <SidebarItem label="Overview" active />
           <SidebarItem label="Inbox" />
-          <SidebarItem label="Bookings" />
           <SidebarItem label="Inventory" />
         </nav>
 
@@ -82,10 +48,10 @@ export default function DashboardPage() {
         <header className="flex items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-              Dashboard
+              Overview
             </h1>
             <p className="mt-1 text-sm text-slate-500">
-              High-level snapshot of bookings, leads, staff, and supply risk.
+              Snapshot of patient volume, appointments, and supply risk.
             </p>
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -98,176 +64,113 @@ export default function DashboardPage() {
           </div>
         </header>
 
+        {/* Large inventory alert */}
+        {hasLowStock && (
+          <section className="mt-6">
+            <div className="flex items-start gap-3 rounded-2xl border border-rose-400 bg-rose-50 px-4 py-3 shadow-sm shadow-rose-100">
+              <div className="mt-0.5 h-8 w-8 shrink-0 rounded-full bg-rose-600 text-center text-sm font-semibold leading-8 text-white">
+                !
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
+                  Action Required: Low Stock Detected
+                </p>
+                <p className="mt-1 text-sm text-rose-900">
+                  One or more critical medical supplies are below the safe threshold
+                  of 10 units. Review inventory to avoid disruptions to patient care.
+                </p>
+                <ul className="mt-2 space-y-1 text-xs text-rose-900">
+                  {lowStockItems.map((item) => (
+                    <li
+                      key={item.id}
+                      className="flex items-center justify-between rounded-lg bg-rose-100/60 px-2 py-1"
+                    >
+                      <span>{item.name}</span>
+                      <span className="font-semibold">{item.quantity} units</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Stats cards */}
         <section className="mt-8 grid gap-5 md:grid-cols-3">
           <StatsCard
-            label="Upcoming Bookings"
-            value="8"
-            badge="Next 24 hrs"
+            label="Total Patients"
+            value="324"
+            badge="Active panel"
             tone="primary"
           />
           <StatsCard
-            label="New Leads"
-            value="12"
-            badge="This week"
+            label="Active Appointments"
+            value="18"
+            badge="Today"
             tone="soft"
           />
           <StatsCard
-            label="Staff Active"
-            value="2"
-            badge="Currently online"
+            label="New Leads"
+            value="7"
+            badge="This week"
             tone="success"
           />
         </section>
 
-        {/* Inventory + Recent Activity */}
-        <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.8fr)]">
-          {/* Inventory & alert */}
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <h2 className="text-sm font-semibold text-slate-900">
-                    Inventory overview
-                  </h2>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Glove levels across sizes for today&apos;s sessions.
-                  </p>
-                </div>
-                <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
-                  {inventoryItems.length} glove SKUs
-                </span>
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
-                <table className="min-w-full divide-y divide-slate-100 text-sm">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                        Item
-                      </th>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                        Category
-                      </th>
-                      <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                        Quantity
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white/70">
-                    {inventoryItems.map((item) => {
-                      const isLow = item.quantity < 10;
-                      return (
-                        <tr key={item.id} className={isLow ? "bg-rose-50/60" : ""}>
-                          <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
-                            {item.name}
-                          </td>
-                          <td className="px-4 py-2.5 text-xs text-slate-500">
-                            {item.category}
-                          </td>
-                          <td className="px-4 py-2.5 text-right text-sm font-semibold">
-                            <span
-                              className={
-                                isLow ? "text-rose-700" : "text-slate-700"
-                              }
-                            >
-                              {item.quantity}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Inventory Alerts */}
-            <div className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
+        {/* Inventory section */}
+        <section className="mt-10 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
               <h2 className="text-sm font-semibold text-slate-900">
-                Inventory alerts
+                Inventory overview
               </h2>
               <p className="mt-1 text-xs text-slate-500">
-                We monitor glove stock to avoid disruptions to procedure rooms.
+                Key consumables monitored for continuity of care.
               </p>
-
-              {hasLowGloveStock ? (
-                <div className="mt-4 flex items-start gap-3 rounded-2xl border border-rose-400 bg-rose-50 px-4 py-3 shadow-sm shadow-rose-100">
-                  <div className="mt-0.5 h-7 w-7 shrink-0 rounded-full bg-rose-600 text-center text-xs font-semibold leading-7 text-white">
-                    !
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
-                      Action Required: Low Stock of Gloves
-                    </p>
-                    <p className="mt-1 text-sm text-rose-900">
-                      One or more glove SKUs are below the safe threshold of 10 units.
-                      Please review and create a restock order.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                  All tracked glove SKUs are within safe stock levels.
-                </div>
-              )}
             </div>
+            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
+              {inventoryItems.length} items
+            </span>
           </div>
 
-          {/* Recent Activity */}
-          <div className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900">
-                  Recent activity
-                </h2>
-                <p className="mt-1 text-xs text-slate-500">
-                  Patients who recently booked or updated appointments.
-                </p>
-              </div>
-              <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
-                Last 24 hours
-              </span>
-            </div>
-
-            <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
-              <table className="min-w-full divide-y divide-slate-100 text-sm">
-                <thead className="bg-slate-50">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                      Patient
-                    </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                      Activity
-                    </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                      Clinician
-                    </th>
-                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                      Time
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 bg-white/70">
-                  {recentActivity.map((row) => (
-                    <tr key={row.id}>
+          <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+            <table className="min-w-full divide-y divide-slate-100 text-sm">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Item
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Category
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Quantity
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white/70">
+                {inventoryItems.map((item) => {
+                  const isLow = item.quantity < 10;
+                  return (
+                    <tr key={item.id} className={isLow ? "bg-rose-50/60" : ""}>
                       <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
-                        {row.patient}
+                        {item.name}
                       </td>
-                      <td className="px-4 py-2.5 text-xs text-slate-600">
-                        {row.type}
+                      <td className="px-4 py-2.5 text-xs text-slate-500">
+                        {item.category}
                       </td>
-                      <td className="px-4 py-2.5 text-xs text-slate-600">
-                        {row.clinician}
-                      </td>
-                      <td className="px-4 py-2.5 text-right text-xs text-slate-500">
-                        {row.time}
+                      <td className="px-4 py-2.5 text-right text-sm font-semibold">
+                        <span
+                          className={isLow ? "text-rose-700" : "text-slate-700"}
+                        >
+                          {item.quantity}
+                        </span>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </section>
       </main>
@@ -307,8 +210,7 @@ type StatsCardProps = {
 
 function StatsCard({ label, value, badge, tone = "primary" }: StatsCardProps) {
   const toneClasses: Record<NonNullable<StatsCardProps["tone"]>, string> = {
-    primary:
-      "border-sky-100 bg-sky-50/70 text-sky-900 shadow-sky-100",
+    primary: "border-sky-100 bg-sky-50/70 text-sky-900 shadow-sky-100",
     soft: "border-slate-100 bg-slate-50/70 text-slate-900 shadow-slate-100",
     success:
       "border-emerald-100 bg-emerald-50/70 text-emerald-900 shadow-emerald-100",
@@ -332,4 +234,5 @@ function StatsCard({ label, value, badge, tone = "primary" }: StatsCardProps) {
     </div>
   );
 }
+
 
