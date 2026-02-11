@@ -1,4 +1,6 @@
-"use client";
+ "use client";
+
+import { useState } from "react";
 
 const inventoryItems = [
   { id: 1, name: "Nitrile Gloves", category: "PPE", quantity: 6 },
@@ -10,6 +12,7 @@ const inventoryItems = [
 export default function DashboardPage() {
   const lowStockItems = inventoryItems.filter((item) => item.quantity < 10);
   const hasLowStock = lowStockItems.length > 0;
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
@@ -90,6 +93,23 @@ export default function DashboardPage() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOrderSuccess(true)}
+                    className="inline-flex items-center rounded-full bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm shadow-rose-300 transition hover:bg-rose-700"
+                  >
+                    Order Now
+                  </button>
+                  {orderSuccess && (
+                    <div className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-medium text-emerald-800 shadow-sm shadow-emerald-100">
+                      <span className="mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] text-white">
+                        ✓
+                      </span>
+                      Restock request created successfully.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </section>
