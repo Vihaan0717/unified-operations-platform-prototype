@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Inquiry = {
+type Lead = {
   id: number;
   name: string;
   summary: string;
@@ -10,32 +10,32 @@ type Inquiry = {
   time: string;
 };
 
-const inquiries: Inquiry[] = [
+const leads: Lead[] = [
   {
     id: 1,
-    name: "James Chen",
-    summary: "Question about post-op wound care instructions",
+    name: "John Smith",
+    summary: "Requested information about new patient onboarding",
     status: "new",
     time: "9:12 AM",
   },
   {
     id: 2,
-    name: "Maria Rodriguez",
-    summary: "Rescheduling follow-up appointment",
+    name: "Sarah Connor",
+    summary: "Interested in remote monitoring program",
     status: "open",
     time: "8:47 AM",
   },
   {
     id: 3,
     name: "Daniel Lee",
-    summary: "Insurance coverage for MRI",
+    summary: "Question about insurance eligibility",
     status: "open",
     time: "Yesterday",
   },
   {
     id: 4,
-    name: "Patel Family",
-    summary: "Care plan clarification for diabetes management",
+    name: "Priya Patel",
+    summary: "Looking to move family care to your clinic",
     status: "resolved",
     time: "Mon",
   },
@@ -44,30 +44,31 @@ const inquiries: Inquiry[] = [
 export default function InboxPage() {
   const [selectedId, setSelectedId] = useState<number>(1);
   const [aiAutoReply, setAiAutoReply] = useState<boolean>(true);
-  const selectedInquiry = inquiries.find((i) => i.id === selectedId) ?? inquiries[0];
+  const [draft, setDraft] = useState("");
+  const selectedLead = leads.find((l) => l.id === selectedId) ?? leads[0];
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
       <main className="mx-auto flex w-full max-w-6xl flex-1 gap-6 px-4 py-8 lg:px-8">
-        {/* Left: Patient inquiries list */}
+        {/* Left: Leads list */}
         <section className="flex w-full max-w-xs flex-col rounded-2xl border border-slate-200 bg-white/90 shadow-sm">
           <div className="border-b border-slate-100 px-4 py-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
-              Patient Inquiries
+              Leads
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              Triage, respond, and escalate conversations.
+              Qualify and engage high-intent patients.
             </p>
           </div>
           <div className="flex-1 overflow-y-auto">
             <ul className="divide-y divide-slate-100">
-              {inquiries.map((inquiry) => {
-                const active = inquiry.id === selectedId;
+              {leads.map((lead) => {
+                const active = lead.id === selectedId;
                 return (
-                  <li key={inquiry.id}>
+                  <li key={lead.id}>
                     <button
                       type="button"
-                      onClick={() => setSelectedId(inquiry.id)}
+                      onClick={() => setSelectedId(lead.id)}
                       className={`flex w-full flex-col items-start gap-1 px-4 py-3 text-left transition ${
                         active
                           ? "bg-sky-50/80"
@@ -76,16 +77,16 @@ export default function InboxPage() {
                     >
                       <div className="flex w-full items-center justify-between">
                         <p className="text-sm font-medium text-slate-900">
-                          {inquiry.name}
+                          {lead.name}
                         </p>
                         <span className="text-xs text-slate-400">
-                          {inquiry.time}
+                          {lead.time}
                         </span>
                       </div>
                       <p className="line-clamp-2 text-xs text-slate-500">
-                        {inquiry.summary}
+                        {lead.summary}
                       </p>
-                      <StatusPill status={inquiry.status} />
+                      <StatusPill status={lead.status} />
                     </button>
                   </li>
                 );
@@ -100,10 +101,10 @@ export default function InboxPage() {
           <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
             <div>
               <p className="text-sm font-semibold text-slate-900">
-                {selectedInquiry.name}
+                {selectedLead.name}
               </p>
               <p className="mt-0.5 text-xs text-slate-500">
-                Patient inquiry thread • Secure messaging
+                Lead conversation • Secure messaging
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -121,7 +122,7 @@ export default function InboxPage() {
           <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 px-5 py-4">
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
-                {selectedInquiry.name.charAt(0)}
+                {selectedLead.name.charAt(0)}
               </div>
               <div className="max-w-md rounded-2xl rounded-tl-sm bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm">
                 Hi, I&apos;d like to follow up on my recent visit and clarify a few
@@ -159,9 +160,18 @@ export default function InboxPage() {
             <div className="mt-3 flex items-end gap-3">
               <textarea
                 rows={2}
-                placeholder="Type a reply to the patient..."
+                placeholder="Type a reply to this lead..."
                 className="min-h-[56px] flex-1 resize-none rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100"
+                value={draft}
                 onFocus={() => setAiAutoReply(false)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  // As soon as the user starts typing, automatically disable AI
+                  if (aiAutoReply && next.length > draft.length && draft.length === 0) {
+                    setAiAutoReply(false);
+                  }
+                  setDraft(next);
+                }}
               />
               <button
                 type="button"
@@ -178,7 +188,7 @@ export default function InboxPage() {
 }
 
 type StatusPillProps = {
-  status: Inquiry["status"];
+  status: Lead["status"];
 };
 
 function StatusPill({ status }: StatusPillProps) {
