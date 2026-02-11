@@ -173,7 +173,7 @@ export default function InboxPage() {
               <span className="font-semibold text-slate-800">turn off</span> AI
               Auto-Reply so your message is sent manually.
             </div>
-            <div className="mt-3 flex items-end gap-3">
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
               <textarea
                 rows={2}
                 placeholder="Type a reply to this lead..."
@@ -193,25 +193,44 @@ export default function InboxPage() {
                   setInputValue(next);
                 }}
               />
-              <button
-                type="button"
-                onClick={() => {
-                  const trimmed = inputValue.trim();
-                  if (!trimmed) return;
-                  setMessages((prev) => [
-                    ...prev,
-                    {
-                      id: prev.length + 1,
-                      from: "ops",
-                      text: trimmed,
-                    },
-                  ]);
-                  setInputValue("");
-                }}
-                className="inline-flex items-center rounded-full bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
-              >
-                Send
-              </button>
+              <div className="flex items-center gap-2 sm:flex-col sm:items-stretch sm:gap-2 md:flex-row">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const trimmed = inputValue.trim();
+                    if (!trimmed) return;
+                    setMessages((prev) => [
+                      ...prev,
+                      {
+                        id: prev.length + 1,
+                        from: "ops",
+                        text: trimmed,
+                      },
+                    ]);
+                    setInputValue("");
+                  }}
+                  className="inline-flex flex-1 items-center justify-center rounded-full bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
+                >
+                  Send
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMessages((prev) => [
+                      ...prev,
+                      {
+                        id: prev.length + 1,
+                        from: "ops",
+                        text:
+                          "[Automated Message] Intake form sent to patient email.",
+                      },
+                    ])
+                  }
+                  className="inline-flex flex-1 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                >
+                  Send Intake Form
+                </button>
+              </div>
             </div>
           </div>
         </section>
