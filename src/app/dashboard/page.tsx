@@ -298,3 +298,38 @@ function SidebarItem({ label, active }: SidebarItemProps) {
   );
 }
 
+type StatsCardProps = {
+  label: string;
+  value: string;
+  badge?: string;
+  tone?: "primary" | "soft" | "success";
+};
+
+function StatsCard({ label, value, badge, tone = "primary" }: StatsCardProps) {
+  const toneClasses: Record<NonNullable<StatsCardProps["tone"]>, string> = {
+    primary:
+      "border-sky-100 bg-sky-50/70 text-sky-900 shadow-sky-100",
+    soft: "border-slate-100 bg-slate-50/70 text-slate-900 shadow-slate-100",
+    success:
+      "border-emerald-100 bg-emerald-50/70 text-emerald-900 shadow-emerald-100",
+  };
+
+  return (
+    <div
+      className={`flex flex-col justify-between rounded-2xl border px-4 py-4 text-sm shadow-sm ${toneClasses[tone]}`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+          {label}
+        </p>
+        {badge && (
+          <span className="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-medium text-slate-600 shadow-sm">
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className="mt-3 text-2xl font-semibold tracking-tight">{value}</p>
+    </div>
+  );
+}
+
