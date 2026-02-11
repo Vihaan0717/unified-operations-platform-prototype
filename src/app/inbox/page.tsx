@@ -44,7 +44,21 @@ const leads: Lead[] = [
 export default function InboxPage() {
   const [selectedId, setSelectedId] = useState<number>(1);
   const [aiAutoReply, setAiAutoReply] = useState<boolean>(true);
-  const [draft, setDraft] = useState("");
+  const [messages, setMessages] = useState<
+    { id: number; from: "lead" | "ops"; text: string }[]
+  >([
+    {
+      id: 1,
+      from: "lead",
+      text: "Hi, I’d like to follow up on my recent visit and clarify a few details about my care plan.",
+    },
+    {
+      id: 2,
+      from: "ops",
+      text: "Thanks for reaching out. I’m reviewing your chart now and can help clarify next steps and any home-care instructions.",
+    },
+  ]);
+  const [inputValue, setInputValue] = useState("");
   const selectedLead = leads.find((l) => l.id === selectedId) ?? leads[0];
 
   return (
@@ -120,27 +134,29 @@ export default function InboxPage() {
 
           {/* Messages */}
           <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 px-5 py-4">
-            <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
-                {selectedLead.name.charAt(0)}
-              </div>
-              <div className="max-w-md rounded-2xl rounded-tl-sm bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm">
-                Hi, I&apos;d like to follow up on my recent visit and clarify a few
-                details about my care plan.
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <div className="flex items-start gap-3">
-                <div className="max-w-md rounded-2xl rounded-tr-sm bg-sky-600 px-3.5 py-2.5 text-sm text-white shadow-sm">
-                  Thanks for reaching out. I&apos;m reviewing your chart now and can
-                  help clarify next steps and any home-care instructions.
+            {messages.map((message) =>
+              message.from === "lead" ? (
+                <div key={message.id} className="flex items-start gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+                    {selectedLead.name.charAt(0)}
+                  </div>
+                  <div className="max-w-md rounded-2xl rounded-tl-sm bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm">
+                    {message.text}
+                  </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-700 text-xs font-semibold text-white">
-                  CO
+              ) : (
+                <div key={message.id} className="flex justify-end">
+                  <div className="flex items-start gap-3">
+                    <div className="max-w-md rounded-2xl rounded-tr-sm bg-sky-600 px-3.5 py-2.5 text-sm text-white shadow-sm">
+                      {message.text}
+                    </div>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-700 text-xs font-semibold text-white">
+                      CO
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )
+            )}
 
             {aiAutoReply && (
               <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -162,19 +178,36 @@ export default function InboxPage() {
                 rows={2}
                 placeholder="Type a reply to this lead..."
                 className="min-h-[56px] flex-1 resize-none rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100"
-                value={draft}
+                value={inputValue}
                 onFocus={() => setAiAutoReply(false)}
                 onChange={(e) => {
                   const next = e.target.value;
                   // As soon as the user starts typing, automatically disable AI
-                  if (aiAutoReply && next.length > draft.length && draft.length === 0) {
+                  if (
+                    aiAutoReply &&
+                    next.length > inputValue.length &&
+                    inputValue.length === 0
+                  ) {
                     setAiAutoReply(false);
                   }
-                  setDraft(next);
+                  setInputValue(next);
                 }}
               />
               <button
                 type="button"
+                onClick={() => {
+                  const trimmed = inputValue.trim();
+                  if (!trimmed) return;
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      id: prev.length + 1,
+                      from: "ops",
+                      text: trimmed,
+                    },
+                  ]);
+                  setInputValue("");
+                }}
                 className="inline-flex items-center rounded-full bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
               >
                 Send
@@ -192,13 +225,13 @@ type StatusPillProps = {
 };
 
 function StatusPill({ status }: StatusPillProps) {
-  const labelMap: Record<Inquiry["status"], string> = {
+  const labelMap: Record<Lead["status"], string> = {
     new: "New",
     open: "In progress",
     resolved: "Resolved",
   };
 
-  const styleMap: Record<Inquiry["status"], string> = {
+  const styleMap: Record<Lead["status"], string> = {
     new: "bg-sky-50 text-sky-800 border-sky-100",
     open: "bg-amber-50 text-amber-800 border-amber-100",
     resolved: "bg-emerald-50 text-emerald-800 border-emerald-100",
