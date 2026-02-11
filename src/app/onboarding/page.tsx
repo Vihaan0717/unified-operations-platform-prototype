@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [workspace, setWorkspace] = useState({
     businessName: "",
@@ -13,6 +15,8 @@ export default function OnboardingPage() {
     email: true,
     sms: false,
   });
+  const [bookingTypeDefined, setBookingTypeDefined] = useState(false);
+  const [workspaceActivated, setWorkspaceActivated] = useState(false);
 
   const handleNextFromStep1 = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,19 +34,25 @@ export default function OnboardingPage() {
           <div className="mt-2 flex items-center justify-between gap-3">
             <div>
               <h1 className="text-xl font-semibold tracking-tight text-slate-900">
-                {step === 1 ? "Step 1: Workspace Creation" : "Step 2: Connect Channels"}
+                {step === 1
+                  ? "Step 1: Workspace Creation"
+                  : workspaceActivated
+                  ? "Workspace Activated"
+                  : "Step 2: Connect & Activate"}
               </h1>
               <p className="mt-1 text-xs text-slate-500">
                 {step === 1
                   ? "Tell us a bit about your organization so we can tailor CareOps to your team."
-                  : "Choose which communication channels you want to enable for this workspace."}
+                  : workspaceActivated
+                  ? "Your CareOps workspace is live. You can now direct your team to the dashboard."
+                  : "Connect channels and confirm your checklist before activating your workspace."}
               </p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-[11px] font-medium text-slate-600">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-600 text-xs font-semibold text-white">
-                {step}
+                {workspaceActivated ? "✓" : step}
               </span>
-              <span>of 2</span>
+              <span>{workspaceActivated ? "Complete" : "of 2"}</span>
             </div>
           </div>
         </header>
@@ -119,7 +129,7 @@ export default function OnboardingPage() {
             </form>
           )}
 
-          {step === 2 && (
+          {step === 2 && !workspaceActivated && (
             <div className="space-y-6">
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-sky-700">
@@ -153,10 +163,81 @@ export default function OnboardingPage() {
                 />
               </div>
 
+              {/* Activation checklist */}
+              <div className="mt-2 rounded-xl border border-slate-100 bg-white px-4 py-3 text-xs text-slate-700 shadow-sm">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Activation Checklist
+                </p>
+                <ul className="mt-2 space-y-1.5">
+                  <li className="flex items-center gap-2">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-semibold text-white">
+                      ✓
+                    </span>
+                    <span>Workspace Created</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-semibold text-white">
+                      ✓
+                    </span>
+                    <span>Communication Channels Connected</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setBookingTypeDefined((prev) => !prev)}
+                      className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] font-semibold ${
+                        bookingTypeDefined
+                          ? "border-sky-500 bg-sky-500 text-white"
+                          : "border-slate-300 bg-white text-slate-400"
+                      }`}
+                    >
+                      {bookingTypeDefined ? "✓" : ""}
+                    </button>
+                    <span>Booking Type Defined</span>
+                  </li>
+                </ul>
+              </div>
+
               <p className="text-[11px] text-slate-500">
                 These settings can be refined later in workspace settings. For now,
                 we&apos;re just capturing your preferred starting configuration.
               </p>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => setWorkspaceActivated(true)}
+                  disabled={!bookingTypeDefined}
+                  className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-xs font-semibold text-white shadow-sm shadow-emerald-300 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400/60 disabled:shadow-none"
+                >
+                  Activate Workspace
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && workspaceActivated && (
+            <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 shadow-inner">
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
+                  <span className="absolute inline-flex h-12 w-12 animate-ping rounded-full bg-emerald-300 opacity-60" />
+                  <span className="relative text-2xl">⚡</span>
+                </div>
+              </div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                Workspace Activated!
+              </h2>
+              <p className="max-w-md text-sm text-slate-600">
+                Your CareOps workspace is live. Inbox routing, bookings, and
+                inventory monitoring are ready for your team to use.
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push("/dashboard")}
+                className="mt-2 inline-flex items-center justify-center rounded-full bg-sky-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
+              >
+                Go to Dashboard
+              </button>
             </div>
           )}
         </main>
