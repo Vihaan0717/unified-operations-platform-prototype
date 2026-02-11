@@ -138,59 +138,150 @@ export default function DashboardPage() {
         </section>
 
         {/* Inventory section */}
-        <section className="mt-10 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-semibold text-slate-900">
-                Inventory overview
-              </h2>
-              <p className="mt-1 text-xs text-slate-500">
-                Key consumables monitored for continuity of care.
-              </p>
+        <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.6fr)]">
+          <div className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900">
+                  Inventory overview
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Key consumables monitored for continuity of care.
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
+                {inventoryItems.length} items
+              </span>
             </div>
-            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
-              {inventoryItems.length} items
-            </span>
+
+            <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Item
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Category
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Quantity
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white/70">
+                  {inventoryItems.map((item) => {
+                    const isLow = item.quantity < 10;
+                    return (
+                      <tr key={item.id} className={isLow ? "bg-rose-50/60" : ""}>
+                        <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                          {item.name}
+                        </td>
+                        <td className="px-4 py-2.5 text-xs text-slate-500">
+                          {item.category}
+                        </td>
+                        <td className="px-4 py-2.5 text-right text-sm font-semibold">
+                          <span
+                            className={isLow ? "text-rose-700" : "text-slate-700"}
+                          >
+                            {item.quantity}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
-            <table className="min-w-full divide-y divide-slate-100 text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                    Item
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                    Category
-                  </th>
-                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
-                    Quantity
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 bg-white/70">
-                {inventoryItems.map((item) => {
-                  const isLow = item.quantity < 10;
-                  return (
-                    <tr key={item.id} className={isLow ? "bg-rose-50/60" : ""}>
-                      <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
-                        {item.name}
-                      </td>
-                      <td className="px-4 py-2.5 text-xs text-slate-500">
-                        {item.category}
-                      </td>
-                      <td className="px-4 py-2.5 text-right text-sm font-semibold">
-                        <span
-                          className={isLow ? "text-rose-700" : "text-slate-700"}
-                        >
-                          {item.quantity}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          {/* Recent appointments */}
+          <div className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900">
+                  Recent Appointments
+                </h2>
+                <p className="mt-1 text-xs text-slate-500">
+                  Latest scheduled visits across your panel.
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
+                Today &amp; tomorrow
+              </span>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Name
+                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Service
+                    </th>
+                    <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white/70">
+                  <tr>
+                    <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                      Jordan Smith
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-600">
+                      Follow-up consultation
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800">
+                        Confirmed
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                      Maria Rodriguez
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-600">
+                      New patient intake
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-800">
+                        Pending
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                      Daniel Lee
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-600">
+                      Telehealth check-in
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800">
+                        Confirmed
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                      Priya Patel
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-600">
+                      Diabetes management review
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-800">
+                        Pending
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </main>
