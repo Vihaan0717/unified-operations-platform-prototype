@@ -41,12 +41,16 @@ const leads: Lead[] = [
   },
 ];
 
+type Message = {
+  id: number;
+  from: "lead" | "ops" | "system";
+  text: string;
+};
+
 export default function InboxPage() {
   const [selectedId, setSelectedId] = useState<number>(1);
   const [aiAutoReply, setAiAutoReply] = useState<boolean>(true);
-  const [messages, setMessages] = useState<
-    { id: number; from: "lead" | "ops"; text: string }[]
-  >([
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       from: "lead",
@@ -134,17 +138,42 @@ export default function InboxPage() {
 
           {/* Messages */}
           <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 px-5 py-4">
-            {messages.map((message) =>
-              message.from === "lead" ? (
-                <div key={message.id} className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
-                    {selectedLead.name.charAt(0)}
+            {messages.map((message) => {
+              if (message.from === "lead") {
+                return (
+                  <div key={message.id} className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-700">
+                      {selectedLead.name.charAt(0)}
+                    </div>
+                    <div className="max-w-md rounded-2xl rounded-tl-sm bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm">
+                      {message.text}
+                    </div>
                   </div>
-                  <div className="max-w-md rounded-2xl rounded-tl-sm bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm">
-                    {message.text}
+                );
+              }
+
+              if (message.from === "system") {
+                return (
+                  <div key={message.id} className="flex justify-center">
+                    <div className="max-w-md rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700 shadow-sm">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          System automation
+                        </p>
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                          Form Status: Pending
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm">
+                        📋 System: Intake Form Sent. A request has been sent to the
+                        patient to complete their medical history.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ) : (
+                );
+              }
+
+              return (
                 <div key={message.id} className="flex justify-end">
                   <div className="flex items-start gap-3">
                     <div className="max-w-md rounded-2xl rounded-tr-sm bg-sky-600 px-3.5 py-2.5 text-sm text-white shadow-sm">
@@ -155,8 +184,8 @@ export default function InboxPage() {
                     </div>
                   </div>
                 </div>
-              )
-            )}
+              );
+            })}
 
             {aiAutoReply && (
               <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -220,13 +249,13 @@ export default function InboxPage() {
                       ...prev,
                       {
                         id: prev.length + 1,
-                        from: "ops",
+                        from: "system",
                         text:
-                          "[Automated Message] Intake form sent to patient email.",
+                          "📋 System: Intake Form Sent. A request has been sent to the patient to complete their medical history.",
                       },
                     ])
                   }
-                  className="inline-flex flex-1 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                  className="inline-flex flex-1 items-center justify-center rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-xs font-semibold text-violet-800 shadow-sm transition hover:bg-violet-100"
                 >
                   Send Intake Form
                 </button>
