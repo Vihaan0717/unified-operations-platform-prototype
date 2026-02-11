@@ -137,8 +137,147 @@ export default function DashboardPage() {
           />
         </section>
 
+        {/* Recent appointments */}
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">
+                Recent Appointments
+              </h2>
+              <p className="mt-1 text-xs text-slate-500">
+                Latest scheduled visits across your panel.
+              </p>
+            </div>
+            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs text-slate-500">
+              Today &amp; tomorrow
+            </span>
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/60">
+            <table className="min-w-full divide-y divide-slate-100 text-sm">
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Patient Name
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Service
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Date
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Status
+                  </th>
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-[0.15em] text-slate-500">
+                    Quick Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white/70">
+                <tr>
+                  <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                    Jordan Smith
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-600">
+                    General consultation
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-500">
+                    Today · 10:30 AM
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800">
+                      Confirmed
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Send Form
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                    Maria Rodriguez
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-600">
+                    Follow-up visit
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-500">
+                    Today · 02:00 PM
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-800">
+                      Pending
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Send Form
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                    Daniel Lee
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-600">
+                    Lab test
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-500">
+                    Tomorrow · 09:15 AM
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800">
+                      Confirmed
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Send Form
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2.5 text-sm font-medium text-slate-900">
+                    Priya Patel
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-600">
+                    Diabetes management review
+                  </td>
+                  <td className="px-4 py-2.5 text-xs text-slate-500">
+                    Tomorrow · 01:45 PM
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span className="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-medium text-rose-800">
+                      Cancelled
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-right">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Send Form
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         {/* Inventory section */}
-        <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.6fr)]">
+        <section className="mt-10 rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
           <div className="rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <div>
