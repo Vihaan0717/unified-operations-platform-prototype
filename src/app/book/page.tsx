@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 export default function BookPage() {
+  const [date, setDate] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [reason, setReason] = useState("");
@@ -16,55 +17,43 @@ export default function BookPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10 font-sans">
-      <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-xl shadow-slate-200/70 sm:p-8">
-        <header className="mb-6 flex flex-col gap-2 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
-              CareOps
-            </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
-              Book a visit
-            </h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Choose a time that works for you and share a few details so our team can prepare.
-            </p>
-          </div>
-        </header>
-
-        <div className="grid gap-8 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)]">
-          {/* Calendar */}
-          <section className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
-                  Calendar
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  Select an available day for your appointment.
-                </p>
-              </div>
-              <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
-                March 2026
-              </span>
-            </div>
-
-            <SimpleCalendar />
-          </section>
-
-          {/* Booking form & confirmation */}
-          <section className="flex flex-col gap-4">
-            <form
-              onSubmit={handleSubmit}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-            >
+      <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+        {!submitted ? (
+          <>
+            <header className="mb-6 text-center sm:mb-8">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">
-                Your details
+                CareOps
               </p>
-              <p className="mt-1 text-xs text-slate-500">
-                We&apos;ll use this information to confirm your booking.
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+                Book an appointment
+              </h1>
+              <p className="mt-1 text-sm text-slate-500">
+                A simple, secure form to request your visit. We&apos;ll confirm
+                details by email.
               </p>
+            </header>
 
-              <div className="mt-4 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Calendar picker */}
+              <div>
+                <label className="block text-xs font-medium text-slate-700">
+                  Appointment Date
+                </label>
+                <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 shadow-sm focus-within:border-sky-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-sky-100">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-xs font-semibold text-sky-700">
+                    🗓
+                  </span>
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    required
+                    className="w-full border-none bg-transparent text-sm text-slate-900 outline-none [color-scheme:light]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-700">
                     Full Name
@@ -93,13 +82,13 @@ export default function BookPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-700">
-                    Reason for Visit
+                    Symptoms / Reason for Visit
                   </label>
                   <textarea
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     required
-                    placeholder="Briefly describe the reason for your visit."
+                    placeholder="Briefly describe your symptoms or reason for this visit."
                     rows={3}
                     className="mt-1.5 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
                   />
@@ -108,84 +97,39 @@ export default function BookPage() {
 
               <button
                 type="submit"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
+                className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-sky-300 transition hover:bg-sky-700"
               >
-                Submit booking
+                Confirm booking
               </button>
             </form>
-
-            {/* Confirmation message / animation */}
-            <div className="relative h-28 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <div
-                className={`absolute inset-0 flex flex-col items-start justify-center gap-2 px-2 transition-all duration-500 ${
-                  submitted
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-6 opacity-0"
-                }`}
-              >
-                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800 shadow-sm shadow-emerald-100">
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] text-white">
-                    ✓
-                  </span>
-                  Booking Confirmed!
-                </div>
-                <p className="text-xs text-slate-600">
-                  We&apos;ve received your request and sent a confirmation to{" "}
-                  <span className="font-medium text-slate-900">
-                    {email || "your email"}
-                  </span>
-                  . Our team will review your details and share next steps shortly.
-                </p>
-              </div>
-
-              <div
-                className={`absolute inset-0 flex items-center px-2 text-xs text-slate-500 transition-all duration-400 ${
-                  submitted
-                    ? "-translate-y-6 opacity-0"
-                    : "translate-y-0 opacity-100"
-                }`}
-              >
-                After submitting, you&apos;ll see a confirmation of your booking here.
+          </>
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 shadow-inner">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
+                <span className="animate-[ping_0.9s_ease-out_1] absolute inline-flex h-12 w-12 rounded-full bg-emerald-300 opacity-60" />
+                <span className="relative text-2xl">✓</span>
               </div>
             </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SimpleCalendar() {
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const days = Array.from({ length: 30 }, (_, i) => i + 1);
-
-  return (
-    <div className="space-y-2">
-      <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-medium text-slate-500">
-        {daysOfWeek.map((d) => (
-          <span key={d}>{d}</span>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 gap-1.5 text-sm">
-        {days.map((day) => {
-          const isPrimary = day === 12;
-          const isMuted = day < 3;
-          return (
-            <button
-              key={day}
-              type="button"
-              className={`flex h-9 items-center justify-center rounded-lg border text-xs font-medium transition ${
-                isPrimary
-                  ? "border-sky-500 bg-sky-50 text-sky-900 shadow-sm"
-                  : isMuted
-                  ? "border-transparent text-slate-300"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:text-sky-900"
-              }`}
-            >
-              {day}
-            </button>
-          );
-        })}
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+              Booking confirmed
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              We&apos;ve received your request for{" "}
+              <span className="font-medium text-slate-900">
+                {date || "your selected date"}
+              </span>
+              . A confirmation will be sent to{" "}
+              <span className="font-medium text-slate-900">
+                {email || "your email"}
+              </span>{" "}
+              after our team reviews the details.
+            </p>
+            <p className="mt-3 rounded-full bg-slate-50 px-4 py-1.5 text-xs text-slate-500">
+              If anything changes, you can reply directly to your confirmation email.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
