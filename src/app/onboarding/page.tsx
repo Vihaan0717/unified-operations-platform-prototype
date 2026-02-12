@@ -18,9 +18,11 @@ export default function OnboardingPage() {
   const [bookingTypeDefined, setBookingTypeDefined] = useState(false);
   const [workspaceActivated, setWorkspaceActivated] = useState(false);
 
+  // NEW: Validation to ensure at least one channel is active (Requirement 11)
+  const isChannelConnected = channels.email || channels.sms;
+
   const handleNextFromStep1 = (e: React.FormEvent) => {
     e.preventDefault();
-    // workspace details are already in local state; just advance the flow
     setStep(2);
   };
 
@@ -115,9 +117,6 @@ export default function OnboardingPage() {
                   placeholder="ops@caregroup.com"
                   className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-100"
                 />
-                <p className="mt-2 text-[11px] text-slate-500">
-                  We&apos;ll use this for important workspace notifications.
-                </p>
               </div>
 
               <button
@@ -140,7 +139,6 @@ export default function OnboardingPage() {
                   <span className="font-semibold text-slate-900">
                     {workspace.businessName || "your workspace"}
                   </span>
-                  .
                 </p>
               </div>
 
@@ -163,23 +161,21 @@ export default function OnboardingPage() {
                 />
               </div>
 
-              {/* Activation checklist */}
+              {/* Activation checklist (Updated to satisfy Step 11 logic) */}
               <div className="mt-2 rounded-xl border border-slate-100 bg-white px-4 py-3 text-xs text-slate-700 shadow-sm">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   Activation Checklist
                 </p>
                 <ul className="mt-2 space-y-1.5">
                   <li className="flex items-center gap-2">
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-semibold text-white">
-                      ✓
-                    </span>
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-semibold text-white">✓</span>
                     <span>Workspace Created</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-semibold text-white">
-                      ✓
+                    <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold text-white ${isChannelConnected ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+                      {isChannelConnected ? "✓" : "!"}
                     </span>
-                    <span>Communication Channels Connected</span>
+                    <span>Communication Channels Connected (Required)</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <button
@@ -193,21 +189,16 @@ export default function OnboardingPage() {
                     >
                       {bookingTypeDefined ? "✓" : ""}
                     </button>
-                    <span>Booking Type Defined</span>
+                    <span>Booking Type Defined (Required)</span>
                   </li>
                 </ul>
               </div>
-
-              <p className="text-[11px] text-slate-500">
-                These settings can be refined later in workspace settings. For now,
-                we&apos;re just capturing your preferred starting configuration.
-              </p>
 
               <div className="flex justify-end pt-2">
                 <button
                   type="button"
                   onClick={() => setWorkspaceActivated(true)}
-                  disabled={!bookingTypeDefined}
+                  disabled={!bookingTypeDefined || !isChannelConnected}
                   className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-xs font-semibold text-white shadow-sm shadow-emerald-300 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400/60 disabled:shadow-none"
                 >
                   Activate Workspace
@@ -246,19 +237,18 @@ export default function OnboardingPage() {
   );
 }
 
-type ChannelToggleProps = {
-  label: string;
-  description: string;
-  enabled: boolean;
-  onChange: (value: boolean) => void;
-};
-
+// Sub-component remains unchanged
 function ChannelToggle({
   label,
   description,
   enabled,
   onChange,
-}: ChannelToggleProps) {
+}: {
+  label: string;
+  description: string;
+  enabled: boolean;
+  onChange: (value: boolean) => void;
+}) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
       <div>
@@ -281,5 +271,3 @@ function ChannelToggle({
     </div>
   );
 }
-
-
